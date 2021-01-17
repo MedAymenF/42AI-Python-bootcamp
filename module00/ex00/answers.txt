@@ -1,0 +1,5 @@
+pip list --format freeze | tail -n +1 | cut -f 1 -d =
+pip list
+pip show numpy
+pip search tesseract
+pip list --format freeze > requirements.txt
