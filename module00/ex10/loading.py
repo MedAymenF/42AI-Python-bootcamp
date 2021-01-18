@@ -13,7 +13,7 @@ def ft_progress(lst):
         yield i
 
 
-listy = range(1000)
+listy = range(3333)
 ret = 0
 for elem in ft_progress(listy):
     ret += (elem + 3) % 5
