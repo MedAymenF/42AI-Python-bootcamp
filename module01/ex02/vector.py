@@ -21,8 +21,28 @@ class Vector:
 
     def __repr__(self):
         txt = str(self.values)
-        return txt
+        return f"(Vector({self.size}) {txt})"
 
     def __str__(self):
         txt = str(self.values)
-        return f"Vector ({txt})"
+        return f"(Vector {txt})"
+
+    def __add__(self, operand):
+        if (type(operand) is Vector):
+            if (operand.size != self.size):
+                exit()
+            values = [self.values[i] + operand.values[i] for i in range(self.size)]
+            return Vector(values)
+        elif (type(operand) is int or type(operand) is float):
+            values = [self.values[i] + operand for i in range(self.size)]
+            return Vector(values)
+
+    def __sub__(self, operand):
+        if (type(operand) is Vector):
+            if (operand.size != self.size):
+                exit()
+            values = [self.values[i] - operand.values[i] for i in range(self.size)]
+            return Vector(values)
+        elif (type(operand) is int or type(operand) is float):
+            values = [self.values[i] - operand for i in range(self.size)]
+            return Vector(values)
