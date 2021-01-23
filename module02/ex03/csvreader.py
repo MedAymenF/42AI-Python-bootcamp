@@ -1,9 +1,11 @@
 class CsvReader():
-    def __init__(self, filename=None, sep=',', header=False, skip_top=0, skip_bottom=0):
+    def __init__(self, filename=None, sep=',',
+                 header=False, skip_top=0, skip_bottom=0):
         self.filename = filename
         self.sep = sep
         self.skip_top = skip_top
         self.skip_bottom = skip_bottom
+        self.corrupted = False
 
         try:
             self.file = open(filename, 'r')
@@ -13,18 +15,27 @@ class CsvReader():
             return None
 
         if header:
-            self.header = self.file.readline()
+            self.header = self.file.readline().split(sep=self.sep)
+            self.header = [field.strip() for field in self.header]
         else:
             self.header = None
 
-        self.data = self.file.readlines()
-        self.data = [line.strip() for line in self.data]
-        self.data = [line.split(sep=self.sep) for line in self.data]
-        for line in self.data:
-            for field in line:
-                field.strip()
+        self.data = []
+        for line in self.file:
+            row = line.strip().split(sep=self.sep)
+            self.data.append([field.strip() for field in row])
+            if (len(row) != len(self.data[0])):
+                self.corrupted = True
+                return None
+
+        if skip_top:
+            self.data.pop(0)
+        if skip_bottom:
+            self.data.pop(-1)
 
     def __enter__(self):
+        if (self.corrupted):
+            return None
         return self
 
     def __exit__(self, type, value, traceback):
