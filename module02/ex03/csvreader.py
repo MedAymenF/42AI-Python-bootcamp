@@ -23,7 +23,8 @@ class CsvReader():
         self.data = []
         for line in self.file:
             row = line.strip().split(sep=self.sep)
-            self.data.append([field.strip() for field in row])
+            row = [field.strip() for field in row if len(field)]
+            self.data.append(row)
             if (len(row) != len(self.data[0])):
                 self.corrupted = True
                 return None
@@ -58,3 +59,8 @@ if __name__ == "__main__":
     with CsvReader('bad.csv', header=True) as file:
         if file is None:
             print("File is corrupted")
+        else:
+            data = file.getdata()
+            print(data)
+            header = file.getheader()
+            print(header)
