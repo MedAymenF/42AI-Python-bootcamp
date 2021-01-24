@@ -8,6 +8,13 @@ class NumPyCreator:
     def from_tuple(self, tpl):
         return np.array(tpl)
 
+    def from_iterable(self, itr):
+        first = itr[0]
+        return np.fromiter(itr, type(first))
+
+    def from_shape(self, shape, value):
+        pass
+
 
 npc = NumPyCreator()
 
