@@ -25,7 +25,7 @@ class KmeansClustering:
         n = len(X)
         for _ in range(self.ncentroid):
             random_centroid = X[randint(0, n - 1)]
-            self.centroids.append(np.array(random_centroid))
+            self.centroids.append(random_centroid)
         print(self.centroids)
         for _ in range(self.max_iter):
             clusters = [None for _ in range(self.ncentroid)]
@@ -33,10 +33,20 @@ class KmeansClustering:
                 # print(row)
                 distances_from_centroids = []
                 for centroid in self.centroids:
-                    distance = sum(np.absolute(centroid - row))
+                    distance = np.sum(np.absolute(centroid - row))
                     distances_from_centroids.append(distance)
-                print(distances_from_centroids)
-            print(clusters)
+                # print(distances_from_centroids)
+                closest_centroid = distances_from_centroids.index(min(distances_from_centroids))
+                # print(closest_centroid)
+                if (clusters[closest_centroid] is None):
+                    clusters[closest_centroid] = np.array([row])
+                else:
+                    clusters[closest_centroid] = np.concatenate((clusters[closest_centroid], np.array([row])))
+            # print(clusters)
+            for i in range(self.ncentroid):
+                if (clusters[i] is not None):
+                    self.centroids[i] = clusters[i].sum(axis=0) / len(clusters[i])
+            print(self.centroids)
 
     def predict(self, X):
         """
@@ -53,7 +63,7 @@ class KmeansClustering:
 if __name__ == "__main__":
     with CsvReader('solar_system_census.csv', header=True) as file:
         data = file.getdata()
-    kmc = KmeansClustering(max_iter=1, ncentroid=4)
+    kmc = KmeansClustering(ncentroid=4)
     kmc.fit(np.array(data, dtype=float))
-    prediction = kmc.predict(data)
-    print(prediction)
+    # prediction = kmc.predict(data)
+    # print(prediction)
